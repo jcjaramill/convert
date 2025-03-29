@@ -3,8 +3,8 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font
 
 # Cargar el CSV en un DataFrame
-#csv_file = "CSV ESTU_L6.csv"  # Nombre del archivo CSV
-csv_file = "test.csv"  # Nombre del archivo CSV
+#csv_file = "test.csv"  # Nombre del archivo CSV
+csv_file = "stations.csv"  # Nombre del archivo CSV
 
 # Intentar leerlo sin especificar encoding
 try:
