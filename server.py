@@ -44,6 +44,22 @@ def upload_file():
     # Reemplazar valores
     df = df.replace({True: "R", False: "T", "true": "R", "false": "T"})
 
+    # Verificar si las columnas necesarias existen
+    if "Text" not in df.columns or "TC name" not in df.columns:
+        raise ValueError("Las columnas 'Text' o 'TC name' no se encuentran en el archivo CSV.")
+
+    # Agregar columna 'Stations' en la primera posición
+    df.insert(0, "Stations", None)
+
+    # Rellenar 'Stations' con valores de 'Text' solo cuando 'TC name' sea NaN
+    df.loc[df["TC name"].isna(), "Stations"] = df["Text"]
+
+    # Propagar los valores de "Stations" hacia abajo (Forward Fill)
+    df["Stations"].fillna(method="ffill", inplace=True)
+
+    # Eliminar filas donde 'TC name' sea NaN
+    df = df.dropna(subset=["TC name"]) 
+
     # Guardar el DataFrame en un archivo Excel
     excel_path = os.path.join(PROCESSED_FOLDER, file.filename.replace(".csv", ".xlsx"))
     df.to_excel(excel_path, index=False)
@@ -72,7 +88,6 @@ def upload_file():
         "download_link": f"/download/{file.filename.replace('.csv', '.xlsx')}"
     }
     return jsonify(response), 200
-
 
 
 @app.route("/download/<filename>", methods=["GET"])
