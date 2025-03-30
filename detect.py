@@ -3,7 +3,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 # Cargar el archivo CSV
-file_path = "stations.csv"
+file_path = "CSReport.csv"
 df = pd.read_csv(file_path)
 
 # Verificar si las columnas necesarias existen

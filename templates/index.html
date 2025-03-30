@@ -13,7 +13,7 @@
         
         <input type="file" id="fileInput" accept=".csv" class="mt-4 p-2 border rounded w-full">
         
-        <button onclick="uploadFile()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+        <button id="uploadButton" onclick="uploadFile()" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
             Subir y Convertir
         </button>
 
@@ -23,10 +23,17 @@
     <script>
         async function uploadFile() {
             const fileInput = document.getElementById("fileInput");
+            const uploadButton = document.getElementById("uploadButton");
+            const responseDiv = document.getElementById("response");
+
             if (!fileInput.files.length) {
-                console.log("Por favor, selecciona un archivo CSV.");
+                responseDiv.innerHTML = `<p class="text-red-600">❌ Por favor, selecciona un archivo CSV.</p>`;
                 return;
             }
+
+            // Mostrar estado de carga en el botón
+            uploadButton.textContent = "Procesando...";
+            uploadButton.disabled = true;
 
             const formData = new FormData();
             formData.append("file", fileInput.files[0]);
@@ -38,7 +45,6 @@
                 });
 
                 const result = await response.json();
-                const responseDiv = document.getElementById("response");
 
                 if (response.ok) {
                     responseDiv.innerHTML = `
@@ -54,7 +60,11 @@
                     responseDiv.innerHTML = `<p class="text-red-600">❌ Error: ${result.error}</p>`;
                 }
             } catch (error) {
-                document.getElementById("response").innerHTML = `<p class="text-red-600">❌ Error en la conexión</p>`;
+                responseDiv.innerHTML = `<p class="text-red-600">❌ Error en la conexión</p>`;
+            } finally {
+                // Restaurar estado del botón
+                uploadButton.textContent = "Subir y Convertir";
+                uploadButton.disabled = false;
             }
         }
     </script>

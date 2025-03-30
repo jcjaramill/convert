@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file, render_template
 import pandas as pd
 from openpyxl import load_workbook
-from openpyxl.styles import Font, Alignment
+from openpyxl.styles import Font, Alignment, Border, Side
 import os
 
 app = Flask(__name__)
@@ -68,9 +68,20 @@ def upload_file():
     wb = load_workbook(excel_path)
     ws = wb.active
 
+    # Definir estilo de borde
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
     # Aplicar formato a cada celda
     for row in ws.iter_rows():
         for cell in row:
+            # Aplicar bordes a todas las celdas
+            cell.border = thin_border
+
             if cell.value == "T":
                 cell.font = Font(color="FF0000", name="Wingdings 2", size=14)  # Rojo
                 cell.alignment = Alignment(horizontal="center", vertical="center")
